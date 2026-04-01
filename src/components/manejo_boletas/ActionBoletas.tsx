@@ -33,7 +33,7 @@ export default function ActionBoletas({ selectedProducts, estado, detalle_boleta
 
   const pacthCerrarBoletas = async (values: { id_boleta: number[]; fecha_final: string; hora_final: string; codigo_empleado?: string; }) => {
     if (values) {
-      // Define the URL where you want to send the POST request
+    
 
       let result = true;
       for (const element of values.id_boleta) {

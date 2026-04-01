@@ -15,7 +15,5 @@ export const getSectores = async (
     return data;
   } catch {
     return [];
-  } finally {
-    await prisma.$disconnect();
-  }
+  } 
 };

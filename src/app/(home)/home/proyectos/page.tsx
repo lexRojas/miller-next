@@ -1,14 +1,14 @@
 'use client'
 
-import React, { useEffect, useState, useRef } from "react";
+import  { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { Divider } from "primereact/divider";
 import { Button } from "primereact/button";
-import { Messages } from "primereact/messages"
 
-import { getProyectos } from "@/api/proyectos/actions";
+import { getProyectoByID } from "@/api/proyectos/actions";
+import { useBoletaStore } from "@/context/botelaStore";
 
 interface ProyectoItem {
   presupuesto: string;
@@ -17,43 +17,30 @@ interface ProyectoItem {
 
 export default function Proyectos() {
 
+
+  const { variablesEntorno } = useBoletaStore()
+
   const navegate = useRouter();
 
+  const [proyecto, setProyecto] = useState("");
+  const [mensaje, setMensaje] = useState(String || null);
 
-
-  const [filtro, setfiltro] = useState("");
-  const [selectedProyect, setSelectedProyect] = useState({
-    presupuesto: "",
-    proyecto: "",
-  });
   const msg = useRef(null)
 
-  const [tb_presupuesto, setTb_presupuesto] = useState<ProyectoItem[]>([])
 
+  useEffect(() => {
 
-  const get_presupuesto = async (value = "") => {
+    setProyecto(variablesEntorno.idProyecto)
+    console.log(variablesEntorno.idProyecto)
 
-    const presupuesto = await getProyectos()
-
-    if (presupuesto) {
-      const presupuestoFilter = presupuesto.filter((item: any) => (item.proyecto?.toUpperCase().includes(value)))
-
-      if (presupuestoFilter.length > 0) {
-        const presupuestoMapa = presupuestoFilter.map((i: any) => ({
-          presupuesto: i.presupuesto,
-          proyecto: i.proyecto
-        }))
-        setTb_presupuesto(presupuestoMapa)
-      } else {
-        setTb_presupuesto([])
-      }
-    }
+  }, [])
 
 
 
 
 
-  };
+
+
 
   const fijarProyecto = (id: string, descripcion: string) => {
     sessionStorage.setItem("idProyecto", id);
@@ -66,34 +53,24 @@ export default function Proyectos() {
 
 
 
-  const handleClickSelectProyect = () => {
+  const handleClickSelectProyect = async () => {
 
 
-    if (selectedProyect === null) {
+    const data = await getProyectoByID(proyecto)
+    console.log(data)
+    if (data) {
+
+      fijarProyecto(data.presupuesto.toString(), data.proyecto ?? "")
+
 
     } else {
-      const { presupuesto, proyecto } = selectedProyect;
-      fijarProyecto(presupuesto, proyecto);
-      navegate.push("/home");
-
+      setMensaje("El proyecto no existe!!!")
     }
+
+
   };
 
-  const handleClickFilter = () => {
-    get_presupuesto(filtro.toUpperCase());
-  };
 
-  useEffect(() => {
-    get_presupuesto();
-     
-  }, []);
-
-  useEffect(() => {
-     
-    if (tb_presupuesto.length == 0) {
-      setSelectedProyect({ presupuesto: "", proyecto: "" });
-    }
-  }, [tb_presupuesto]);
 
   return (
 
@@ -101,54 +78,30 @@ export default function Proyectos() {
 
       {/**BOTON */}
 
-      <div className="col-span-4">
-        <label htmlFor="txtFiltro"> Filtrar los proyectos por:</label>
+      <div className="col-span-4 text-2xl font-bold">
+        <label htmlFor="txtproyecto"> Digite el número de proyecto (ej: 2026344):</label>
       </div>
 
       <div className="col-span-3">
         <div>
           <InputText
-            className="block w-full"
-            id="txtFiltro"
-            aria-describedby="aria-filtro"
-            onChange={(e) => setfiltro(e.target.value)}
+            className="block w-full p-inputtext-lg "
+            id="txtproyecto"
+            aria-describedby="aria-proyecto"
+            value={proyecto}
+            onChange={(e) => setProyecto(e.target.value)}
           />
         </div>
-        <div>
-          <small
-            className="block"
-            id="aria-filtro">
-            {" "}
-            Digite palabras que describan el proyecto{" "}
-          </small>
-        </div>
+
       </div>
 
+      <div className="col-span-3 flex flex-row justify-content-center text-red-600 text-xl mt-3 justify-center">
 
-      {/**BOTON */}
-      <div className="col-span-1 ">
-        <Button
-          className="w-full"
-          label="Filtrar" onClick={handleClickFilter} />
-      </div>
+        {mensaje && (
+          <p>{mensaje}</p>
+        )}
 
 
-      <div className="col-span-4 ">
-        <div >
-          <label htmlFor="cmdFiltro"> Seleccione el filtro </label>
-        </div>
-        <div >
-          <Dropdown
-            id="cmdFiltro"
-            value={selectedProyect}
-            onChange={(e) => setSelectedProyect(e.value)}
-            options={tb_presupuesto}
-            optionLabel="proyecto"
-            placeholder="Selecciones un presupuesto"
-            className="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-          />
-
-        </div>
       </div>
       <Divider className="col-span-4" />
       <div className="col-span-2 flex flex-row justify-content-center">
@@ -157,12 +110,7 @@ export default function Proyectos() {
           onClick={handleClickSelectProyect}
         />
       </div>
-      <div className="col-span-2 flex flex-row justify-content-center">
 
-        <Messages ref={msg} />
-
-
-      </div>
     </div>
   );
 }

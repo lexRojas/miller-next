@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { TypeTbPresupuesto } from "@/lib/types";
 
-
 export const getProyectos = async (): Promise<TypeTbPresupuesto[]> => {
   try {
     const data = await prisma.tb_presupuesto.findMany({
@@ -17,7 +16,28 @@ export const getProyectos = async (): Promise<TypeTbPresupuesto[]> => {
     })) as TypeTbPresupuesto[];
   } catch {
     return [];
-  } finally {
-    await prisma.$disconnect();
+  }
+};
+
+export const getProyectoByID = async (
+  id: string,
+): Promise<TypeTbPresupuesto |null > => {
+  try {
+    const data = await prisma.tb_presupuesto.findUnique({
+      where: { presupuesto: id },
+    });
+
+    if (data) {
+      return {
+        ...data,
+        // Convert Prisma Decimal to number to match TypeTbPresupuesto
+        tipo_licitacion: data.tipo_licitacion?.toNumber(),
+        area_construccion: data.area_construccion?.toNumber(),
+      } as TypeTbPresupuesto;
+    } else {
+      return  null
+    }
+  } catch {
+    return null
   }
 };
