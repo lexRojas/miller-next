@@ -2,11 +2,11 @@ import React, { useRef } from "react";
 import "@/styles/boleta.css";
 import { converPDF } from "../tools/converPDF";
 
-const Boleta = (props) => {
+const Boleta = (props: { user: any; boleta: any; }) => {
   const { user, boleta } = props;
 
 
-  const report = useRef()
+  const report = useRef<HTMLDivElement>(null)
 
   const genPDF = () => {
 
@@ -52,7 +52,7 @@ const Boleta = (props) => {
               <th> Nombre Completo </th>
             </thead>
             <tbody>
-              {boleta.empleados_asignados.map((empleados) => (
+              {boleta.empleados_asignados.map((empleados: any) => (
                 <tr key={empleados.codigo_empleado}>
                   <td> {empleados.codigo_empleado} </td>
                   <td> {empleados.nombre_completo} </td>
