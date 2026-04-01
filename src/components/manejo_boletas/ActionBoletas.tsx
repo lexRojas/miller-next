@@ -5,10 +5,9 @@ import { Button } from "primereact/button";
 import { useRouter } from "next/navigation";
 import { Toast } from "primereact/toast";
 import { useRef } from "react";
-import { useSelector } from "react-redux";
-import axios from "axios";
 import { convertDate_to_YMD } from "../../tools/convertDate";
 import { getTimeHHMM } from "../../tools/getTimeHHMM";
+import { CerrarBoletaInput, cerrarBoletas } from "@/api/boleta/actions";
 
 interface ActionBoletasProps {
   selectedProducts: any[] | null;
@@ -20,9 +19,9 @@ interface ActionBoletasProps {
 export default function ActionBoletas({ selectedProducts, estado, detalle_boletas, setDetalle_Boletas }: ActionBoletasProps) {
   const router = useRouter();
 
-  const myURL_ = useSelector((state) => state.user.myURL);
 
-  const toastControl = useRef(null);
+
+  const toastControl = useRef<Toast>(null);
 
   const handleClickCancelar = () => {
     router.push("/app");
@@ -32,30 +31,35 @@ export default function ActionBoletas({ selectedProducts, estado, detalle_boleta
     router.push("/home/boletaAsignacion");
   };
 
-  const pacthCerrarBoletas = async (values) => {
+  const pacthCerrarBoletas = async (values: { id_boleta: number[]; fecha_final: string; hora_final: string; codigo_empleado?: string; }) => {
     if (values) {
       // Define the URL where you want to send the POST request
-      const url = myURL_ + "/cerrar_boleta";
-      // Make the POST request using Axios
-      await axios
-        .patch(url, values)
-        .then(function (response) {
-          // Handle success response
-          //confirm1()
-          const { resultado } = response.data;
-          return resultado;
-        })
-        .catch(function (error) {
-          // Handle error
-          console.log(error);
-          return false;
-        });
+
+      let result = true;
+      for (const element of values.id_boleta) {
+
+        const row: CerrarBoletaInput = {
+          codigo_empleado: values.codigo_empleado ?? "",
+          fecha_final: values.fecha_final,
+          id_boleta: element,
+          hora_final: values.hora_final
+        };
+        const response = await cerrarBoletas(row);
+        result = result && (!!response);
+      }
+      return result;
     }
+    return false;
   };
 
-  const handleClickCerrar = () => {
+
+
+
+
+
+  const handleClickCerrar = async () => {
     if (selectedProducts) {
-      const id = [];
+      const id: number[] = [];
       selectedProducts.forEach((element) => {
         id.push(element.id);
       });
@@ -65,28 +69,28 @@ export default function ActionBoletas({ selectedProducts, estado, detalle_boleta
         hora_final: getTimeHHMM(),
       };
 
-      const resultado = pacthCerrarBoletas(valores)
-      if (resultado){
+      const resultado = await pacthCerrarBoletas(valores)
+      if (resultado) {
 
-        let  detalle_boletas_copia = JSON.parse(JSON.stringify(detalle_boletas));
+        let detalle_boletas_copia = JSON.parse(JSON.stringify(detalle_boletas));
 
-    
+
         id.forEach(element => {
-          detalle_boletas_copia = detalle_boletas_copia.filter((row) => {return row.id !== element});
+          detalle_boletas_copia = detalle_boletas_copia.filter((row: { id: number; }) => { return row.id !== element });
         })
-        
-        
+
+
         setDetalle_Boletas(detalle_boletas_copia)
 
 
       } else {
-      toastControl.current.show({
-        severity: "error",
-        summary: "Miller CR",
-        detail: "Debes seleccionar alguna boleta de asignacion",
-        life: 3000,
-      });
-    }
+        toastControl.current?.show({
+          severity: "error",
+          summary: "Miller CR",
+          detail: "Debes seleccionar alguna boleta de asignacion",
+          life: 3000,
+        });
+      }
     }
   };
 
