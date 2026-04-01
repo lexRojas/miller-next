@@ -8,7 +8,6 @@ import { Divider } from "primereact/divider";
 import { Button } from "primereact/button";
 import { Messages } from "primereact/messages"
 
-import { useAppDispatch } from "@/context/hooks";
 import { getProyectos } from "@/api/proyectos/actions";
 
 interface ProyectoItem {

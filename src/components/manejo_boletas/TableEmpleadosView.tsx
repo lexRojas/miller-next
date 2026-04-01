@@ -63,13 +63,13 @@ export default function TableEmpleadosView({
         <Button
           label={buttonOptions[0].label}
           visible={buttonOptions[0].visible}
-          onClick={(e) => buttonOptions[0].action(selectedEmployee)}
+          onClick={() => buttonOptions[0].action(selectedEmployee)}
           disabled={selectedEmployee ? false : true}
         />
         <Button
           label={buttonOptions[1].label}
           visible={buttonOptions[1].visible}
-          onClick={(e) => buttonOptions[1].action(false)}
+          onClick={() => buttonOptions[1].action(false)}
           autoFocus
         />
       </div>

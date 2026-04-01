@@ -26,7 +26,7 @@ function BoletaAsignacion() {
     setSector(idSector)
 
 
-  }, []);
+  }, [setProyecto, setSector]);
 
 
 

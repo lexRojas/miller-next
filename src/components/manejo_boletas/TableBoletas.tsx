@@ -30,8 +30,8 @@ export default function TableBoletas({
   estado,
   selectedProducts,
   setSelectedProducts,
-  date_inicio,
-  date_final,
+  //date_inicio,
+  //date_final,
   detalle_boletas,
   setDetalle_Boletas
 }: TableBoletasProps) {
@@ -73,21 +73,21 @@ export default function TableBoletas({
           icon="pi pi-plus"
           severity={estado ? "secondary" : "success"}
           disabled={estado}
-          onClick={(e) => showEmpleadosAdd(options)}
+          onClick={() => showEmpleadosAdd(options)}
         />
         <Button
           className="m-1"
           icon="pi pi-minus"
           severity={estado ? "secondary" : "danger"}
           disabled={estado}
-          onClick={(e) => showEmpleadosRemove(options)}
+          onClick={() => showEmpleadosRemove(options)}
         />
 
         <Button
           className="m-1"
           style={{ background: 'green' }}
           icon="pi pi-whatsapp"
-          onClick={(e) => showBoleta(options)}
+          onClick={() => showBoleta(options)}
         />
       </div>
     );
@@ -175,7 +175,7 @@ export default function TableBoletas({
   const pacthEmployee = async (values: CerrarBoletaInput) => {
     if (values) {
 
-      const result = await cerrarBoletas(values)
+       await cerrarBoletas(values)
     }
   };
 
@@ -219,7 +219,7 @@ export default function TableBoletas({
     console.log(values)
     if (values) {
       
-      const result = await addBoletaEmpleadoBoleta(values)
+      await addBoletaEmpleadoBoleta(values)
 
     }
   };

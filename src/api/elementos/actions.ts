@@ -30,7 +30,7 @@ export const getElemDetail = async (
         const cod_ele_sec = row.cod_ele_sec;
 
         // 🔹 2. Obtener actividades (equivalente al segundo query)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  
         const actividades = await prisma.$queryRawUnsafe<any[]>(`
           SELECT
             tpm.presupuesto,

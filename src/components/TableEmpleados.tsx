@@ -8,7 +8,7 @@ import { DataTable, DataTableValueArray } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 
@@ -100,24 +100,24 @@ function TableEmpleados() {
   //   });
   // };
 
-  const messageContent = (
-    <div>
-      <p className="font-bold text-m text-primary">
-        {" "}
-        <strong>Se ha incluido su boleta de asignacion. </strong>{" "}
-      </p>
-      <p className="  text-s text-secundary">
-        ¿Desea ir a ver las boleta asignadas?
-      </p>
-    </div>
-  );
+  // const messageContent = (
+  //   <div>
+  //     <p className="font-bold text-m text-primary">
+  //       {" "}
+  //       <strong>Se ha incluido su boleta de asignacion. </strong>{" "}
+  //     </p>
+  //     <p className="  text-s text-secundary">
+  //       ¿Desea ir a ver las boleta asignadas?
+  //     </p>
+  //   </div>
+  // );
 
-  const accept = () => {
-    navegate.push("home/detalleBoletas");
-  };
-  const reject = () => {
-    window.location.reload();
-  };
+  // const accept = () => {
+  //   navegate.push("home/detalleBoletas");
+  // };
+  // const reject = () => {
+  //   window.location.reload();
+  // };
 
   const toastRef = useRef(null);
   const navegate = useRouter();

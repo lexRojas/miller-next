@@ -16,10 +16,10 @@ interface ControlToolsBoletasProps {
 export default function ControlToolsBoletas({
   estado,
   setestado,
-  date_inicio,
-  date_final,
-  setDateInicio,
-  setDateFinal
+  //date_inicio,
+  //date_final,
+  ///setDateInicio,
+  //setDateFinal
 }: ControlToolsBoletasProps) {
   return (
     <div className="card flex-auto md:flex-wrap gap-3 p-fluid">

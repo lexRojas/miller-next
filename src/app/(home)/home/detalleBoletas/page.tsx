@@ -7,11 +7,9 @@ import ActionBoletas from "@/components/manejo_boletas/ActionBoletas";
 
 function DetalleBoletas() {
   const [estado, setestado] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedProducts, setSelectedProducts] = useState<any[] | null>(null);
   const [date_inicio, setDateInicio] = useState<Date | null>(new Date());
   const [date_final, setDateFinal] = useState<Date | null>(new Date());
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [detalle_boletas, setDetalle_Boletas] = useState<any[]>([]);
 
   return (
