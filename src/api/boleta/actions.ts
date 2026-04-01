@@ -24,35 +24,29 @@ export type BoletaInput = {
 // utils/serialize.ts
 
 export async function crearBoleta(data: BoletaInput) {
-  const dataSerial = serializePrisma(data);
-  console.log(dataSerial);
-
   try {
     const result = await prisma.$transaction(async (tx) => {
       // 1. Insertar boleta
       const nuevaBoleta = await tx.boleta.create({
         data: {
           fecha_inicio: data.fecha_inicio,
-          proyecto: dataSerial.proyecto,
-          ubicacion: dataSerial.ubicacion,
-          comentarios: dataSerial.comentarios,
-          cantidad_medida: dataSerial.cantidad_medida,
-          unidad_medida: dataSerial.unidad_medida,
-          hora_inicio: dataSerial.hora_inicio,
-          hora_final: dataSerial.hora_final,
-          cerrada: dataSerial.cerrada,
-          codigo_manobra: dataSerial.codigo_manobra,
+          proyecto: data.proyecto,
+          ubicacion: data.ubicacion,
+          comentarios: data.comentarios,
+          cantidad_medida: data.cantidad_medida,
+          unidad_medida: data.unidad_medida,
+          hora_inicio: data.hora_inicio,
+          hora_final: data.hora_final,
+          cerrada: data.cerrada,
+          codigo_manobra: data.codigo_manobra,
           fecha_final: data.fecha_final,
         },
       });
 
       // 2. Insertar empleados (si existen)
-      if (
-        dataSerial.empleados_asignados &&
-        dataSerial.empleados_asignados.length > 0
-      ) {
+      if (data.empleados_asignados && data.empleados_asignados.length > 0) {
         await tx.empleado_boleta.createMany({
-          data: dataSerial.empleados_asignados.map(
+          data: data.empleados_asignados.map(
             (emp: { codigo_empleado: string }) => ({
               id_boleta: nuevaBoleta.id,
               codigo_empleado: emp.codigo_empleado,
