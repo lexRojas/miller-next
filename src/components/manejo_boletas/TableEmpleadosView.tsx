@@ -7,16 +7,26 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 
+interface TableEmpleadosViewProps {
+  empleados: any[];
+  buttonOptions: {
+    label: string;
+    visible: boolean;
+    action: (value: any) => void;
+  }[];
+  optionsSelectedRow: any;
+}
+
 export default function TableEmpleadosView({
   empleados,
   buttonOptions,
   optionsSelectedRow,
-}) {
+}: TableEmpleadosViewProps) {
   // Variables del contexto
 
   // Variables de estado interno
 
-  const [selectedEmployee, SetSelectedEmployee] = useState(null);
+  const [selectedEmployee, SetSelectedEmployee] = useState<any>(null);
 
   const [titulo, SetTitulo] = useState("");
 
@@ -49,7 +59,7 @@ export default function TableEmpleadosView({
         <Column
           field="codigo_empleado"
           header="Codigo"
-          sortField={true}
+    
         ></Column>
         <Column
           field="nombre_completo"

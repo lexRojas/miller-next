@@ -24,15 +24,15 @@ import { useBoletaStore } from "@/context/botelaStore";
 
 type PostBoletaInput = {
   fecha_inicio: string
-  proyecto?: string | null
-  ubicacion?: string | null
-  comentarios?: string | null
-  cantidad_medida?: number | null
-  unidad_medida?: string | null
-  hora_inicio?: string | null
-  hora_final?: string | null
-  cerrada?: boolean | null
-  codigo_manobra?: number | null
+  proyecto: string
+  ubicacion: string
+  comentarios: string
+  cantidad_medida: number
+  unidad_medida: string
+  hora_inicio: string
+  hora_final: string
+  cerrada: boolean
+  codigo_manobra: number
   fecha_final: string
 
   empleados_asignados: {
@@ -219,16 +219,16 @@ function TableEmpleados() {
   const handleClickBoleta = async () => {
     const postData:PostBoletaInput = {
       fecha_inicio: fecha_inicio_.split("T")[0],
-      proyecto: proyecto_,
-      ubicacion: ubicacion_,
-      comentarios: comentarios_,
-      cantidad_medida: cantidad_medida_,
-      unidad_medida: unidad_medida_,
-      hora_inicio: hora_inicio_,
-      hora_final: hora_final_,
-      cerrada: cerrada_,
-      codigo_manobra: codigo_manobra_,
-      fecha_final: fecha_final_.split("T")[0],
+      proyecto: proyecto_ || "",
+      ubicacion: ubicacion_ || "",
+      comentarios: comentarios_ || "",
+      cantidad_medida: cantidad_medida_ || 0,
+      unidad_medida: unidad_medida_ || "",
+      hora_inicio: hora_inicio_ || "",
+      hora_final: hora_final_ ?? "17:00",
+      cerrada: cerrada_ ?? false,
+      codigo_manobra: Number(codigo_manobra_) || 0,
+      fecha_final: (fecha_final_ || "").split("T")[0],
       empleados_asignados: datosEmpleadosAsignados.map((emp) => ({
         codigo_empleado: emp.codigo_empleado??"",
         nombre_completo: emp.nombre_completo,
