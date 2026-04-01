@@ -1,0 +1,94 @@
+.cuerpo_boleta {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.item-texto {
+  flex-shrink: 1;
+  flex-grow: 1;
+  flex-basis: 10rem;
+  background-color: bisque;
+  padding: 5px;
+
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1.1rem;
+}
+
+.item-texto .label {
+  font-weight: 600;
+}
+
+.lista-empleados {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+table.blueTable {
+  border: 1px solid #1c6ea4;
+  background-color: #ffffff;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+table.blueTable td,
+table.blueTable th {
+  border: 1px solid #aaaaaa;
+  padding: 5px 8px;
+}
+table.blueTable tbody td {
+  font-size: 13px;
+  color: #333333;
+}
+table.blueTable tr:nth-child(even) {
+  background: #f8ffe4;
+}
+table.blueTable thead {
+  background: #2a85d1;
+  background: -moz-linear-gradient(top, #5fa3dc 0%, #3f91d5 66%, #2a85d1 100%);
+  background: -webkit-linear-gradient(
+    top,
+    #5fa3dc 0%,
+    #3f91d5 66%,
+    #2a85d1 100%
+  );
+  background: linear-gradient(to bottom, #5fa3dc 0%, #3f91d5 66%, #2a85d1 100%);
+  border-bottom: 2px solid #444444;
+}
+table.blueTable thead th {
+  font-size: 15px;
+  font-weight: bold;
+  color: #ffffff;
+}
+table.blueTable tfoot td {
+  font-size: 14px;
+}
+table.blueTable tfoot .links {
+  text-align: right;
+}
+table.blueTable tfoot .links a {
+  display: inline-block;
+  background: #1c6ea4;
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+.panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10rem;
+}
+
+.panel button {
+  background-color: #2a85d1;
+  border: transparent;
+  padding: 5px;
+  color: white;
+  font-weight: 600;
+  border-radius: 5px;
+  width: 10rem;
+}

@@ -1,0 +1,81 @@
+
+
+html {
+  font-size: 12px;
+
+}
+
+body {
+  font-family: var(--font-family);
+  font-weight: normal;
+  background: var(--surface-ground);
+  color: var(--text-color);
+  padding: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.menu-barra {
+  background-color: rgb(31, 61, 117);
+  border-radius: 6px;
+  padding: 0px;
+  margin: 2px;
+  align-items: center;
+}
+
+.menu-titulo {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  border: none;
+  font:
+    normal 16px/normal Arial Black,
+    Gadget,
+    sans-serif;
+  color: rgba(255, 255, 255, 0.9);
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  margin: 0px;
+}
+
+.menu-subtitulo {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  border: none;
+  font:
+    normal 16px/normal "Lucida Sans Unicode",
+    "Lucida Grande",
+    serif;
+  color: rgba(234, 211, 79, 1);
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  margin: 0px;
+}
+
+.menu-error {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  border: none;
+  font:
+    normal 16px/normal "Lucida Sans Unicode",
+    "Lucida Grande",
+    serif;
+  color: rgb(255, 136, 0);
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  margin: 0px;
+}
+
+.menu-botton {
+  width: 100px;
+}

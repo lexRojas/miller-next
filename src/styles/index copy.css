@@ -1,0 +1,95 @@
+body html {
+  margin: 0px;
+  height: 100vh;
+  width: 100vh;
+}
+
+html {
+  font-size: 12px;
+}
+
+body {
+  font-family: var(--font-family);
+  font-weight: normal;
+  background: var(--surface-ground);
+  color: var(--text-color);
+  padding: 1rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.barra {
+  background-color: #13305f;
+  color: white;
+  display: block;
+  justify-content: center;
+  flex-direction: row;
+  padding-bottom: 0px;
+  margin-bottom: 1rem;
+  text-align: center;
+  align-items: center;
+  font-style: Georgia;
+  font-size: 1.5rem;
+}
+.fondo {
+  background-color: #647591;  
+  height: 100vh;
+  display: block;
+  align-items: center;
+  justify-items: center;
+}
+
+.fondo-windows{
+  background-color:  white;
+  color:black;
+  
+}
+/* estilo barra lateral */
+
+.barraLateral {
+  background-color:#d4dbe6;
+  background: #1b3f79;
+}
+
+.contenedor{
+  display: inline;
+  justify-content: center;
+  
+}
+
+
+/* Color de resto de la barra menu */
+#sdb {
+  background-color: #1b3f79;
+}
+
+
+.all-center{
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+}
+
+
+#nav-item:hover {
+  background-color: #5579b3;
+}
+
+
+.bordes {
+  border: 1px solid rgb(22, 32, 126);
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.bordes-div{
+  border: 0.5px solid rgba(92, 92, 92, 0.466);
+  
+}

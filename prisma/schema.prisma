@@ -1,0 +1,284 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["horas", "payroll", "public"]
+}
+
+model boleta {
+  id              Int      @id(map: "boleta_pk") @default(autoincrement())
+  fecha_inicio    String?  @db.VarChar
+  proyecto        String?  @db.VarChar
+  ubicacion       String?  @db.VarChar
+  comentarios     String?  @db.VarChar
+  cantidad_medida Int?
+  unidad_medida   String?  @db.VarChar
+  hora_inicio     String?  @db.VarChar
+  hora_final      String?  @db.VarChar
+  cerrada         Boolean?
+  codigo_manobra  Int?
+  fecha_final     String?  @db.VarChar
+
+  @@schema("horas")
+}
+
+model empleado_boleta {
+  id_boleta       Int
+  codigo_empleado String  @db.VarChar
+  fecha_inicio    String? @db.VarChar
+  hora_inicio     String? @db.VarChar
+  fecha_final     String? @db.VarChar
+  hora_final      String? @db.VarChar
+  id              Int     @id(map: "empleado_boleta_pk") @default(autoincrement())
+
+  @@schema("horas")
+}
+
+model horas_tb_usuario {
+  login             String   @id @db.VarChar
+  nombre            String   @db.VarChar(30)
+  password          String   @db.VarChar(8)
+  fecha_cambio      DateTime @default(now()) @db.Timestamptz(6)
+  fecha_vencimiento DateTime @default(now()) @db.Timestamptz(6)
+  activo            Boolean
+
+  @@map("tb_usuario")
+  @@schema("horas")
+}
+
+model usuario {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(30)
+  login    String @db.VarChar(30)
+  password String @db.VarChar(30)
+  perfil   String @db.VarChar(30)
+
+  @@schema("horas")
+}
+
+model empleado {
+  idempleado                BigInt             @id
+  activo                    Boolean
+  codigo_empleado           String?            @db.VarChar(255)
+  cuenta_bancaria           String?            @db.VarChar(255)
+  desempeno                 String?            @db.VarChar(255)
+  fecha_exclusion           DateTime?          @db.Date
+  fecha_inclusion           DateTime?          @db.Date
+  fecha_ingreso             DateTime?          @db.Date
+  fecha_salida              DateTime?          @db.Date
+  fecha_salida_esperada     DateTime?          @db.Date
+  forma_de_pago             Int?
+  funcion                   String?            @db.VarChar(255)
+  numero_transaccion        String?            @db.VarChar(255)
+  salario                   Float
+  tipo_contrato             String?            @db.VarChar(255)
+  tipo_cuenta               Int?
+  banco_idbanco             BigInt?
+  persona_idpersona         BigInt?
+  poliza_numero_poliza      String?            @db.VarChar(255)
+  proyecto_presupuesto      BigInt?
+  puesto_idpuesto           BigInt?
+  terminacion_idterminacion BigInt?
+  proyecto                  proyecto?          @relation(fields: [proyecto_presupuesto], references: [presupuesto], onDelete: NoAction, onUpdate: NoAction, map: "fk_dy2rcv2a58uatciosi4w816ox")
+  puesto                    puesto?            @relation(fields: [puesto_idpuesto], references: [idpuesto], onDelete: NoAction, onUpdate: NoAction, map: "fk_iptmdwyul48x4mcf946tvjrr7")
+  persona                   persona?           @relation(fields: [persona_idpersona], references: [idpersona], onDelete: NoAction, onUpdate: NoAction, map: "fk_qcy6jhjmsrooj404ooo2tgo2u")
+  persona_empleado          persona_empleado?
+
+  @@schema("payroll")
+}
+
+model persona {
+  idpersona                    BigInt             @id
+  apellido1                    String?            @db.VarChar(255)
+  apellido2                    String?            @db.VarChar(255)
+  condicion                    String?            @db.VarChar(255)
+  direccion                    String?            @db.VarChar(255)
+  fecha_nacimiento             DateTime?          @db.Date
+  genero                       String?            @db.VarChar(255)
+  nombre1                      String?            @db.VarChar(255)
+  nombre2                      String?            @db.VarChar(255)
+  nombre_completo              String?            @db.VarChar(255)
+  telefono                     String?            @db.VarChar(255)
+  tipoasegurado                Int?
+  estado_civil_idestado_civil1 BigInt?
+  nacionalidad_id_nacionalidad BigInt?
+  empleado                     empleado[]
+  persona_empleado             persona_empleado[]
+
+  @@schema("payroll")
+}
+
+model persona_empleado {
+  persona_idpersona     BigInt
+  empleadoes_idempleado BigInt   @unique(map: "uk_atrubewuu6ip6nwf9ty1rn8ee")
+  persona               persona  @relation(fields: [persona_idpersona], references: [idpersona], onDelete: NoAction, onUpdate: NoAction, map: "fk_29wb6pmokewe2q7tiq940sk2l")
+  empleado              empleado @relation(fields: [empleadoes_idempleado], references: [idempleado], onDelete: NoAction, onUpdate: NoAction, map: "fk_atrubewuu6ip6nwf9ty1rn8ee")
+
+  @@schema("payroll")
+}
+
+model proyecto {
+  presupuesto BigInt     @id
+  proyecto    String?    @db.VarChar(255)
+  empleado    empleado[]
+
+  @@schema("payroll")
+}
+
+model puesto {
+  idpuesto    BigInt     @id
+  descripcion String?    @db.VarChar(255)
+  estado      Boolean?
+  empleado    empleado[]
+
+  @@schema("payroll")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tb_elementos {
+  descripcion           String?                 @db.Char(50)
+  codigo_elemento       Decimal                 @id(map: "pk_codigo_elemento") @db.Decimal(3, 0)
+  fecha_cambio          DateTime?               @default(dbgenerated("('now'::text)::date")) @db.Date
+  cod_usuario           String?                 @db.Char(15)
+  unidad_medida         Decimal?                @db.Decimal(4, 0)
+  tb_unidad_medida      tb_unidad_medida?       @relation(fields: [unidad_medida], references: [cod_unidad_medida], onDelete: Cascade, map: "fk_unidad_medida")
+  tb_elementos_sectores tb_elementos_sectores[]
+
+  @@index([cod_usuario], map: "idx_tb_elementos")
+  @@index([unidad_medida], map: "idx_tb_elementos_0")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tb_elementos_sectores {
+  presupuesto       String            @db.Char(7)
+  elemento          Decimal?          @db.Decimal(3, 0)
+  sector            String?           @db.Char(1)
+  descripcion       String?           @db.Char(50)
+  comentario        String?
+  cantidad_elemento Decimal?          @db.Decimal(10, 2)
+  cod_ele_sec       String            @db.Char(8)
+  fecha_cambio      DateTime?         @default(dbgenerated("('now'::text)::date")) @db.Date
+  cod_usuario       String?           @db.Char(15)
+  unidad_medida     Decimal?          @db.Decimal(4, 0)
+  consecutivo       Decimal?          @db.Decimal(4, 0)
+  tb_elementos      tb_elementos?     @relation(fields: [elemento], references: [codigo_elemento], onDelete: Cascade, map: "fk_elemento")
+  tb_presupuesto    tb_presupuesto    @relation(fields: [presupuesto], references: [presupuesto], onDelete: Cascade, map: "fk_presupuesto")
+  tb_unidad_medida  tb_unidad_medida? @relation(fields: [unidad_medida], references: [cod_unidad_medida], onDelete: Cascade, map: "fk_unidad_medida")
+  tb_presup_manobra tb_presup_manobra[]
+
+  @@id([presupuesto, cod_ele_sec], map: "PK_ELEMENTO")
+  @@index([cod_usuario], map: "idx_tb_elementos_sectores")
+  @@index([unidad_medida], map: "idx_tb_elementos_sectores_0")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tb_manoobra {
+  codigo_manobra    Decimal             @id(map: "pk_codigo_manobra") @db.Decimal(5, 0)
+  actividad         String?             @db.Char(30)
+  rendimiento       Decimal?            @db.Decimal(5, 2)
+  puesto            String?             @db.Char(3)
+  cod_usuario       String?             @db.Char(15)
+  fecha_cambio      DateTime?           @default(dbgenerated("('now'::text)::date")) @db.Date
+  unidad_medida     Decimal?            @db.Decimal(4, 0)
+  tb_unidad_medida  tb_unidad_medida?   @relation(fields: [unidad_medida], references: [cod_unidad_medida], onDelete: Cascade, map: "fk_unidad_medida")
+  tb_presup_manobra tb_presup_manobra[]
+
+  @@index([cod_usuario], map: "idx_tb_manoobra")
+  @@index([unidad_medida], map: "idx_tb_manoobra_0")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tb_presup_manobra {
+  presupuesto      String            @db.Char(7)
+  codigo_manobra   Decimal           @db.Decimal(5, 0)
+  cantidad         Decimal?          @db.Decimal(9, 2)
+  rendimiento      Decimal?          @db.Decimal(9, 2)
+  cant_hht         Decimal?          @db.Decimal(9, 2)
+  costo_hh         Decimal?          @db.Decimal(9, 2)
+  costo_hht        Decimal?          @db.Decimal(18, 2)
+  fecha_cambio     DateTime?         @db.Date
+  cod_usuario      String?           @db.Char(15)
+  unidad_medida    Decimal?          @db.Decimal(4, 0)
+  cod_ele_sec      String            @db.Char(8)
+  tb_manoobra           tb_manoobra           @relation(fields: [codigo_manobra], references: [codigo_manobra], onDelete: Cascade, map: "fk_manoobra")
+  tb_unidad_medida      tb_unidad_medida?     @relation(fields: [unidad_medida], references: [cod_unidad_medida], onDelete: Cascade, map: "fk_unidad_medida")
+  tb_elementos_sectores tb_elementos_sectores @relation(fields: [presupuesto, cod_ele_sec], references: [presupuesto, cod_ele_sec], onDelete: Cascade, map: "fk_ele_sec")
+
+  @@id([presupuesto, codigo_manobra, cod_ele_sec], map: "pk_presupmanobra")
+  @@index([presupuesto], map: "idx_tb_presup_manobra")
+  @@index([cod_usuario], map: "idx_tb_presup_manobra_1")
+  @@index([unidad_medida], map: "idx_tb_presup_manobra_2")
+  @@index([codigo_manobra], map: "idx_tb_presup_manobra_3")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tb_presupuesto {
+  presupuesto           String                  @id(map: "pk_presupuesto") @db.Char(7)
+  proyecto              String?
+  propietario           String?                 @db.Char(40)
+  fecha_apertura        DateTime?               @db.Date
+  hora_apertura         String?                 @db.Char(5)
+  area_construccion     Decimal?                @db.Decimal(10, 2)
+  fecha_cambio          DateTime?               @default(dbgenerated("('now'::text)::date")) @db.Date
+  cod_usuario           String?                 @db.Char(15)
+  tipo_licitacion       Decimal?                @db.Decimal(2, 0)
+  responsable           Int?
+  num_licitacion        String?                 @db.Char(20)
+  activo                Boolean?
+  tb_elementos_sectores tb_elementos_sectores[]
+
+  @@index([cod_usuario], map: "idx_tb_presupuesto")
+  @@index([tipo_licitacion], map: "idx_tb_presupuesto_1")
+  @@schema("public")
+}
+
+model tb_presupuesto_c {
+  presupuesto       String   @id @db.VarChar(7)
+  proyecto          String   @db.VarChar(200)
+  propietario       String   @db.VarChar(40)
+  fecha_apertura    DateTime @default(now()) @db.Date
+  hora_apertura     String   @db.VarChar(5)
+  area_construccion Float
+  fecha_cambio      DateTime @default(now()) @db.Date
+  cod_usuario       String   @db.VarChar(15)
+  tipo_licitacion   Int
+  responsable       Int
+  num_licitacion    String   @db.VarChar(20)
+  activo            Boolean
+
+  @@schema("public")
+}
+
+model tb_sectores_proyectos {
+  codigo_sector String    @db.Char(1)
+  fecha_cambio  DateTime? @default(dbgenerated("('now'::text)::date")) @db.Date
+  cod_usuario   String?   @db.Char(15)
+  presupuesto   String    @db.Char(7)
+  descripcion   String?   @db.Char(50)
+
+  @@id([codigo_sector, presupuesto], map: "pk_cod_sector")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tb_unidad_medida {
+  cod_unidad_medida     Decimal                 @id(map: "pk_tb_unidad_medida") @default(dbgenerated("nextval('idunimed_inc'::regclass)")) @db.Decimal(4, 0)
+  descripcion           String?                 @db.Char(30)
+  fecha_cambio          DateTime?               @default(dbgenerated("('now'::text)::date")) @db.Date
+  cod_usuario           String?                 @db.Char(15)
+  descrip_larga         String?                 @db.Char(30)
+  tb_elementos          tb_elementos[]
+  tb_elementos_sectores tb_elementos_sectores[]
+  tb_manoobra           tb_manoobra[]
+  tb_presup_manobra     tb_presup_manobra[]
+
+  @@index([cod_usuario], map: "idx_tb_unidad_medida")
+  @@schema("public")
+}
