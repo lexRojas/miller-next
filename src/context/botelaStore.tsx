@@ -17,9 +17,9 @@ type Store = {
 
 export const useBoletaStore = create<Store>((set) => ({
     variablesEntorno: {
-        idProyecto: "",
-        descripcionProyecto: "",
-        idSector: ""
+        idProyecto:  "",
+        descripcionProyecto:  "",
+        idSector:  "",
     },
 
     setProyecto: (idProyecto, descripcionProyecto) =>

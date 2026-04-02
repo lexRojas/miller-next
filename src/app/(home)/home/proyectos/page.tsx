@@ -1,8 +1,6 @@
 'use client'
 
-import  { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { Dropdown } from "primereact/dropdown";
+import { useEffect, useState, } from "react";
 import { InputText } from "primereact/inputtext";
 import { Divider } from "primereact/divider";
 import { Button } from "primereact/button";
@@ -10,30 +8,23 @@ import { Button } from "primereact/button";
 import { getProyectoByID } from "@/api/proyectos/actions";
 import { useBoletaStore } from "@/context/botelaStore";
 
-interface ProyectoItem {
-  presupuesto: string;
-  proyecto: string;
-}
 
 export default function Proyectos() {
 
 
   const { variablesEntorno } = useBoletaStore()
 
-  const navegate = useRouter();
 
   const [proyecto, setProyecto] = useState("");
   const [mensaje, setMensaje] = useState(String || null);
 
-  const msg = useRef(null)
 
 
   useEffect(() => {
 
     setProyecto(variablesEntorno.idProyecto)
-    console.log(variablesEntorno.idProyecto)
 
-  }, [])
+  }, [setProyecto, variablesEntorno.idProyecto])
 
 
 

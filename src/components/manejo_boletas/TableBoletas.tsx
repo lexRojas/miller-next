@@ -38,13 +38,8 @@ export default function TableBoletas({
   // Variables del contexto
 
 
-  const variableEntorno = useBoletaStore((s) => s.variablesEntorno)
+  const id_proyecto_ = useBoletaStore(state => state.variablesEntorno.idProyecto);
 
-
-
-  const id_proyecto_ = variableEntorno.idProyecto
-
-  // Variables de estado interno
 
 
 
@@ -55,7 +50,7 @@ export default function TableBoletas({
 
   const [boletaClickAdd_Remove, setboletaClickAdd_Remove] = useState(null);
 
-  const [empleados, setEmpleados] = useState([]);
+  const [empleados, setEmpleados] = useState<any[]>([]);
 
   const [visible, setVisible] = useState(false)
   const [data, setData] = useState([])
@@ -145,10 +140,12 @@ export default function TableBoletas({
     setboletaClickAdd_Remove(id);
 
     const get_empleados = async (presupuesto = 0) => {
+      console.log("presupuesto->", presupuesto)
       if (presupuesto) {
 
         const data = await getEmpleados(presupuesto)
-        if (data!) {
+        console.log(data)
+        if (data.length==0) {
           toastControl.current!.show({
             severity: 'error',
             summary: 'Miller CR',
@@ -157,6 +154,7 @@ export default function TableBoletas({
           })
         } else {
           setEmpleados(data)
+          setVisibleAddEmployee(true)
         }
 
       }
@@ -165,6 +163,7 @@ export default function TableBoletas({
 
 
 
+    console.log(id_proyecto_)
     get_empleados(Number(id_proyecto_));
 
 
@@ -175,7 +174,7 @@ export default function TableBoletas({
   const pacthEmployee = async (values: CerrarBoletaInput) => {
     if (values) {
 
-       await cerrarBoletas(values)
+      await cerrarBoletas(values)
     }
   };
 
@@ -187,7 +186,7 @@ export default function TableBoletas({
       codigo_empleado: empleadosSelected.codigo_empleado,
     });
 
-    if ( resultado!) {
+    if (resultado!) {
       const detalle_boletas_copia = JSON.parse(JSON.stringify(detalle_boletas));
 
       let index = -1;
@@ -215,10 +214,10 @@ export default function TableBoletas({
 
   // PROCESOS PARA AÑADIR EMPLEADOS ..
 
-  const add_empleados = async (values:AddBoletaEmpleadoInput) => {
+  const add_empleados = async (values: AddBoletaEmpleadoInput) => {
     console.log(values)
     if (values) {
-      
+
       await addBoletaEmpleadoBoleta(values)
 
     }
@@ -226,7 +225,7 @@ export default function TableBoletas({
 
   const addEmployee = async (empleadosSelected: any) => {
 
-    const valores:AddBoletaEmpleadoInput = {
+    const valores: AddBoletaEmpleadoInput = {
       id_boleta: boletaClickAdd_Remove!,
       codigo_empleado: empleadosSelected.codigo_empleado,
       fecha_inicio: convertDate_to_YMD(new Date()),
@@ -262,12 +261,12 @@ export default function TableBoletas({
     const getBoletas = async () => {
 
       const data = await getBoletaDetail(id_proyecto_, estado)
-      console.log(data)
       setDetalle_Boletas(data)
+
 
     };
     getBoletas();
-  }, [id_proyecto_,  estado, setDetalle_Boletas]);
+  }, [id_proyecto_, estado, setDetalle_Boletas]);
 
   return (
     <div className="card">

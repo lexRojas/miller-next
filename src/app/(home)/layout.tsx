@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react'
 import MainMenu from '@/components/MainMenu';
+import { useBoletaStore } from '@/context/botelaStore';
 
 let inactivityTimer: string | number | NodeJS.Timeout | undefined;
 const TIMEOUT = 1000 * 60 * 10; // 10 minutos
@@ -45,6 +46,23 @@ export default function RootLayout({
     };
   }, []);
 
+
+  const { setProyecto, setSector } = useBoletaStore()
+
+
+  useEffect(() => {
+    const idProyecto = sessionStorage.getItem("idProyecto");
+    const descripcion = sessionStorage.getItem("descripcionProyecto");
+    const idSector = sessionStorage.getItem("idSector");
+    if (idProyecto) {
+      setProyecto(idProyecto, descripcion!);
+    }
+
+    if (idSector) {
+      setSector(idSector)
+    }
+
+  }, [setProyecto, setSector]);
 
 
 

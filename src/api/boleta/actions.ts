@@ -85,6 +85,8 @@ export async function cerrarBoletas(valores: CerrarBoletaInput) {
     const strFecha = valores.fecha_final;
     const strHora = valores.hora_final;
 
+    console.log("parametros de cerrar boleta -->", valores);
+
     await prisma.empleado_boleta.updateMany({
       where: {
         id_boleta: valores.id_boleta,
@@ -93,6 +95,46 @@ export async function cerrarBoletas(valores: CerrarBoletaInput) {
       data: {
         fecha_final: strFecha,
         hora_final: strHora,
+      },
+    });
+
+    return { resultado: true };
+  } catch (error) {
+    console.error(error);
+    return { resultado: false };
+  }
+}
+
+//**
+/* Cierra las boletas a partir de id de boleta de los empleados que aun esten con cierre pendiente
+ * @param valores
+ * @returns
+ **/
+export async function cerrarBoletasByID(valores: CerrarBoletaInput) {
+  try {
+    // Convertir fecha y hora al formato que usa tu DB (string)
+    const strFecha = valores.fecha_final;
+    const strHora = valores.hora_final;
+
+    console.log("parametros de cerrar boleta -->", valores);
+
+    await prisma.empleado_boleta.updateMany({
+      where: {
+        id_boleta: valores.id_boleta,
+        fecha_final: null,
+      },
+      data: {
+        fecha_final: strFecha,
+        hora_final: strHora,
+      },
+    });
+
+    await prisma.boleta.updateMany({
+      where: {
+        id: valores.id_boleta,
+      },
+      data: {
+        cerrada: true,
       },
     });
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from "react";
+import { useState } from "react";
 import TableBoletas from "@/components/manejo_boletas/TableBoletas";
 import ControlToolsBoletas from "@/components/manejo_boletas/ControlToolsBoletas";
 import ActionBoletas from "@/components/manejo_boletas/ActionBoletas";

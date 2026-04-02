@@ -7,7 +7,7 @@ import { Toast } from "primereact/toast";
 import { useRef } from "react";
 import { convertDate_to_YMD } from "../../tools/convertDate";
 import { getTimeHHMM } from "../../tools/getTimeHHMM";
-import { CerrarBoletaInput, cerrarBoletas } from "@/api/boleta/actions";
+import { CerrarBoletaInput,  cerrarBoletasByID } from "@/api/boleta/actions";
 
 interface ActionBoletasProps {
   selectedProducts: any[] | null;
@@ -24,11 +24,11 @@ export default function ActionBoletas({ selectedProducts, estado, detalle_boleta
   const toastControl = useRef<Toast>(null);
 
   const handleClickCancelar = () => {
-    router.push("/app");
+    router.push("../home");
   };
 
   const handleClickCrearBoleta = () => {
-    router.push("/home/boletaAsignacion");
+    router.push("../home/boletaAsignacion");
   };
 
   const pacthCerrarBoletas = async (values: { id_boleta: number[]; fecha_final: string; hora_final: string; codigo_empleado?: string; }) => {
@@ -44,7 +44,7 @@ export default function ActionBoletas({ selectedProducts, estado, detalle_boleta
           id_boleta: element,
           hora_final: values.hora_final
         };
-        const response = await cerrarBoletas(row);
+        const response = await cerrarBoletasByID(row);
         result = result && (!!response);
       }
       return result;
@@ -58,6 +58,7 @@ export default function ActionBoletas({ selectedProducts, estado, detalle_boleta
 
 
   const handleClickCerrar = async () => {
+
     if (selectedProducts) {
       const id: number[] = [];
       selectedProducts.forEach((element) => {

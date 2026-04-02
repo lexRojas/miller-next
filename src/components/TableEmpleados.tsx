@@ -8,7 +8,7 @@ import { DataTable, DataTableValueArray } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { ConfirmDialog } from "primereact/confirmdialog";
+import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 
@@ -76,8 +76,9 @@ function TableEmpleados() {
 
 
 
+  const proyecto_ = useBoletaStore((state) => state.variablesEntorno.idProyecto);
+
   const fecha_inicio_ = useAppSelector((s) => s.boleta.fecha_inicio);
-  const proyecto_ = useAppSelector((s) => s.boleta.proyecto);
   const ubicacion_ = useAppSelector((s) => s.boleta.ubicacion);
   const comentarios_ = useAppSelector((s) => s.boleta.comentarios);
   const cantidad_medida_ = useAppSelector((s) => s.boleta.cantidad_medida);
@@ -89,35 +90,35 @@ function TableEmpleados() {
   const fecha_final_ = useAppSelector((s) => s.boleta.fecha_final);
   const cantidad_mano_obra_ = useAppSelector((s) => s.user.actividad.cantidad);
 
-  // const confirm1 = () => {
-  //   confirmDialog({
-  //     message: messageContent,
-  //     //"Boleta asignada con exito! ¿Desea ir a ver las boletas asignadas? ",
-  //     header: "Confirmation",
-  //     icon: "pi pi-thumbs-up",
-  //     accept,
-  //     reject,
-  //   });
-  // };
+  const confirm1 = () => {
+    confirmDialog({
+      message: messageContent,
+      //"Boleta asignada con exito! ¿Desea ir a ver las boletas asignadas? ",
+      header: "Confirmation",
+      icon: "pi pi-thumbs-up",
+      accept,
+      reject,
+    });
+  };
 
-  // const messageContent = (
-  //   <div>
-  //     <p className="font-bold text-m text-primary">
-  //       {" "}
-  //       <strong>Se ha incluido su boleta de asignacion. </strong>{" "}
-  //     </p>
-  //     <p className="  text-s text-secundary">
-  //       ¿Desea ir a ver las boleta asignadas?
-  //     </p>
-  //   </div>
-  // );
+  const messageContent = (
+    <div>
+      <p className="font-bold text-m text-primary">
+        {" "}
+        <strong>Se ha incluido su boleta de asignacion. </strong>{" "}
+      </p>
+      <p className="  text-s text-secundary">
+        ¿Desea ir a ver las boleta asignadas?
+      </p>
+    </div>
+  );
 
-  // const accept = () => {
-  //   navegate.push("home/detalleBoletas");
-  // };
-  // const reject = () => {
-  //   window.location.reload();
-  // };
+  const accept = () => {
+    navegate.push("../home/detalleBoletas");
+  };
+  const reject = () => {
+    window.location.reload();
+  };
 
   const toastRef = useRef(null);
   const navegate = useRouter();
@@ -217,7 +218,7 @@ function TableEmpleados() {
   }, [idProyecto]);
 
   const handleClickBoleta = async () => {
-    const postData:PostBoletaInput = {
+    const postData: PostBoletaInput = {
       fecha_inicio: fecha_inicio_.split("T")[0],
       proyecto: proyecto_ || "",
       ubicacion: ubicacion_ || "",
@@ -230,15 +231,15 @@ function TableEmpleados() {
       codigo_manobra: Number(codigo_manobra_) || 0,
       fecha_final: (fecha_final_ || "").split("T")[0],
       empleados_asignados: datosEmpleadosAsignados.map((emp) => ({
-        codigo_empleado: emp.codigo_empleado??"",
+        codigo_empleado: emp.codigo_empleado ?? "",
         nombre_completo: emp.nombre_completo,
       })),
     };
 
-    setData({ 
-      ...postData, 
-      fecha_inicio: fecha_inicio_, 
-      fecha_final: fecha_final_ 
+    setData({
+      ...postData,
+      fecha_inicio: fecha_inicio_,
+      fecha_final: fecha_final_
     } as PostBoletaInput);
 
 
@@ -285,12 +286,16 @@ function TableEmpleados() {
     }
 
     if (validacion) {
-      await crearBoleta(postData)
+      const result = await crearBoleta(postData)
+      if (result!) {
+
+        confirm1()
+      }
     };
   }
 
   const handledClckCancelar = () => {
-    navegate.push("/app");
+    navegate.push("../home");
   };
 
 
@@ -306,16 +311,16 @@ function TableEmpleados() {
     setVisible2(true)
   }
 
-// const convertirHoraADate = (hora: string) => {
-//   const fecha = new Date();
-//   const [h, m] = hora.split(":");
+  // const convertirHoraADate = (hora: string) => {
+  //   const fecha = new Date();
+  //   const [h, m] = hora.split(":");
 
-//   fecha.setHours(Number(h));
-//   fecha.setMinutes(Number(m));
-//   fecha.setSeconds(0);
+  //   fecha.setHours(Number(h));
+  //   fecha.setMinutes(Number(m));
+  //   fecha.setSeconds(0);
 
-//   return fecha;
-// };
+  //   return fecha;
+  // };
 
   return (
     <div >
