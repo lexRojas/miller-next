@@ -31,7 +31,7 @@ function BoletaAsignacion() {
 
 
   return (
-    <div className="card border-gray-400 border-1 m-10 p-5 grid grid-cols-2  gap-5 mt-2">
+    <div className="card border-gray-400 border-1 m-10 p-5 flex  flex-col md:grid  md:grid-cols-2  gap-5 mt-2">
 
       {/* TITULO*/}
       <div className="flex flex-row ">

@@ -4,13 +4,6 @@ import { DataTable, DataTableRowToggleEvent } from "primereact/datatable";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Column } from "primereact/column";
 import { useState, useEffect } from "react";
-
-import { useDispatch } from "react-redux";
-import {
-  SET_ACTIVIDAD,
-} from "../context/userSlice";
-
-import React from "react";
 import { Button } from "primereact/button";
 import { DataTableExpandedRows, DataTableValueArray } from "primereact/datatable";
 import { getElemDetail } from "@/api/elementos/actions";
@@ -42,11 +35,17 @@ function TableElementos() {
 
   const [Loading, setLoading] = useState(true);
 
+  // Utilizar los datos de boletaStore 
+
   const variableEntorno = useBoletaStore((s) => s.variablesEntorno)
   const { idProyecto, idSector } = variableEntorno
 
 
-  const dispatch = useDispatch();
+  const setDatosBoleta = useBoletaStore((s) => s.setDatosBoleta)
+
+
+
+
 
   const [selectedElemento, setSelectedElemento] = useState(null);
   const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | DataTableValueArray | undefined>(undefined);
@@ -95,7 +94,18 @@ function TableElementos() {
   };
 
   const handleClick = (datos: any) => {
-    dispatch(SET_ACTIVIDAD(datos));
+    console.log("template data...", datos)
+    setDatosBoleta({
+      codigo_manobra: datos.codigo_manobra,
+      actividad: datos.actividad,
+      unidad_medida: datos.unidad_medida,
+      cantidad_total: datos.cantidad,
+      rendimiento: datos.rendimiento,
+      cantidad_digitada: datos.cantidad,
+      descripcion: datos.actividad,
+    })
+
+
   };
 
   const rowExpansionTemplate = (data: any) => {

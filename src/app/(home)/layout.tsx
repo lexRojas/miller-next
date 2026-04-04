@@ -47,8 +47,8 @@ export default function RootLayout({
   }, []);
 
 
-  const { setProyecto, setSector } = useBoletaStore()
-
+  const setProyecto = useBoletaStore(s => s.setProyecto)
+  const setSector = useBoletaStore(s => s.setSector)
 
   useEffect(() => {
     const idProyecto = sessionStorage.getItem("idProyecto");

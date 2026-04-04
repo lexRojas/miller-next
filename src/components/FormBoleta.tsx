@@ -1,103 +1,81 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputNumber } from "primereact/inputnumber";
 import { InputMask } from "primereact/inputmask";
 import { Toast } from "primereact/toast";
-
-
-import {
-  setFechaInicio,
-  setProyecto,
-  setUbicacion,
-  setComentarios,
-  setCantidadMedida,
-  setUnidadMedida,
-  setHoraInicio,
-  setHoraFinal,
-  setCerrada,
-  setCodigoManobra,
-  setFechaFinal,
-} from "../context/boletaSlice";
-
-import { useDispatch } from "react-redux";
-
 import { convertDate_to_YMD } from "../tools/convertDate"
 import { getTimeHHMM } from "../tools/getTimeHHMM"
-import { useAppSelector } from "@/context/hooks";
+import { useBoletaStore } from "@/context/botelaStore";
 
 
 
 function FormBoleta() {
+
   const [isValid, setIsValid] = useState(true);
-
-
-  const actividad_ = useAppSelector((s) => s.user.actividad);
-  const id_proyecto_ = useAppSelector((s) => s.user.id_proyecto);
-
-  const dispatch = useDispatch();
-
   const ubicacion_ref = useRef<any>(null);
   const toastRef = useRef<Toast>(null)
 
-  const [descripcion, state_setDescripcion] = useState("");
-  const [medida, state_setCantMedida] = useState(0);
-  const [um, state_setUM] = useState("");
-  const [hora_inicio, state_SetHoraInicio] = useState(getTimeHHMM())
-  const [hora_final, state_setHoraFinal] = useState("17:00");
+  const setDatosBoleta = useBoletaStore((s) => s.setDatosBoleta)
+
+
+
+
+
+
+  const variablesBoleta = useBoletaStore((s) => s.variablesBoleta)
+
   const [isValidCantidad, setisValidCantidad] = useState(true)
   //const [visible , setVisible ] = useState(false)
 
 
-  useEffect(() => {
-    // Valores que provienen de la lista de actividades
-    state_setDescripcion(actividad_.actividad);
-    state_setUM(actividad_.unidad_medida);
-    state_setCantMedida(actividad_.cantidad);
-    state_setHoraFinal("17:00");
-    state_SetHoraInicio(getTimeHHMM())
+  //Manejador del estado 
+  const changeBoletaData = (key: string, value: any) => {
 
-    // Valores que se ingresan al contexto
-    dispatch(setProyecto(id_proyecto_));
-    dispatch(setCerrada(false));
-    dispatch(setCodigoManobra(actividad_.codigo_manobra));
-    dispatch(setFechaInicio(convertDate_to_YMD((new Date()))));
-    dispatch(setFechaFinal(convertDate_to_YMD((new Date()))))
-    dispatch(setUnidadMedida(actividad_.unidad_medida));
-    dispatch(setCantidadMedida(actividad_.cantidad));
-    dispatch(setComentarios(actividad_.actividad));
-    dispatch(setHoraFinal("17:00"));
-    dispatch(setHoraInicio(getTimeHHMM()))
+    setDatosBoleta({ [key]: value });
+  };
+
+
+
+
+  useEffect(() => {
+
+    setDatosBoleta({
+      fecha_inicio: convertDate_to_YMD(new Date()),
+      fecha_final: convertDate_to_YMD(new Date()),
+      hora_inicio: getTimeHHMM(),
+      hora_final: "17:00",
+      ubicacionPlanos: "",
+    });
+
+    console.log("ingreso a formboleta")
+
 
     ubicacion_ref.current?.focus();
-  }, [actividad_, dispatch, id_proyecto_]);
-
-  const handleDescripcionChange = (v: string) => {
-    state_setDescripcion(v);
-    dispatch(setComentarios(v));
-  };
+  }, [setDatosBoleta]);
 
   const handleCantidadMedidaChange = (v: number) => {
 
-    if ((v > actividad_.cantidad) || (v <= 0)) {
+    if ((v > variablesBoleta.cantidad_total) || (v <= 0)) {
 
       setisValidCantidad(false)
     } else {
       setisValidCantidad(true)
     }
 
-    state_setCantMedida(v);
-    dispatch(setCantidadMedida(v));
+    changeBoletaData("cantidad_digitada", v)
+
   };
 
   const handleHoraInicioChange = (v: string) => {
     const horaRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
     if (horaRegex.test(v)) {
-      setHoraInicio(v)
-      dispatch(setHoraInicio(v));
+
+      changeBoletaData("hora_inicio", v)
+
       setIsValid(true);
     } else {
       setIsValid(false);
@@ -134,7 +112,8 @@ function FormBoleta() {
         <InputText
           ref={ubicacion_ref}
           aria-describedby="planos-help"
-          onChange={(e) => dispatch(setUbicacion(e.target.value))}
+          onChange={(e) => changeBoletaData("ubicacionPlanos", e.target.value)}
+          value={variablesBoleta.ubicacionPlanos}
         />
         <small id="planos-help">
           Indique la sección del plano donde se realizará la actividad.
@@ -144,8 +123,9 @@ function FormBoleta() {
       <div className="flex flex-col gap-1 pb-2">
         <label htmlFor="planos">Comentarios</label>
         <InputTextarea
-          value={descripcion}
-          onChange={(e) => handleDescripcionChange(e.target.value)}
+          value={variablesBoleta.descripcion}
+          onChange={(e) => changeBoletaData("descripcion", e.target.value)}
+          aria-describedby="planos-help"
           rows={5}
         />
       </div>
@@ -153,8 +133,10 @@ function FormBoleta() {
         <div className="flex flex-col gap-2 p-0 col-6">
           <label htmlFor="planos">Cantidad de medida</label>
           <InputNumber
-            value={medida}
-            onChange={(e) => handleCantidadMedidaChange(e.value ?? 0)}
+            value={variablesBoleta.cantidad_digitada}
+            onChange={(e) => handleCantidadMedidaChange(e.value!)}
+            onBlur={(e) => handleHoraInicioOnBlur(e.target.value)}
+            aria-describedby="planos-help"
             className={!isValidCantidad ? "p-invalid" : ""}
           />
           {!isValidCantidad && (
@@ -164,7 +146,7 @@ function FormBoleta() {
         <div className="flex flex-col gap-2 p-0 col-6">
           <label htmlFor="planos">Unidad de Medida</label>
           <InputText
-            value={um ?? ''}
+            value={variablesBoleta.unidad_medida ?? ''}
             aria-describedby="planos-help"
             disabled
           />
@@ -175,9 +157,9 @@ function FormBoleta() {
           <label htmlFor="planos">Hora Inicio:</label>
           <InputMask
             mask="99:99"
-            value={hora_inicio}
+            value={variablesBoleta.hora_inicio}
             onChange={(e) => handleHoraInicioChange(e.target.value ?? "")}
-            onBlur={(e) => handleHoraInicioOnBlur(e.target.value)}
+            onBlur={(e) => handleHoraInicioChange(e.target.value ?? "")}
             aria-describedby="hora_help"
             className={!isValid ? "p-invalid" : ""}
           />
@@ -188,9 +170,9 @@ function FormBoleta() {
         <div className="flex flex-col gap-2 p-0 col-6">
           <label htmlFor="planos">Hora Final</label>
           <InputMask
-            value={hora_final}
+            value={variablesBoleta.hora_final}
             mask="99:99"
-            onChange={(e) => dispatch(setHoraFinal(e.target.value ?? ""))}
+            onChange={(e) => changeBoletaData("hora_final", e.target.value ?? "")}
             disabled
             aria-describedby="hora_help"
           />

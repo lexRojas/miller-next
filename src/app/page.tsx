@@ -2,8 +2,7 @@
 
 
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { setIdUser } from "../context/userSlice";
+
 
 
 import { InputText } from "primereact/inputtext";
@@ -11,13 +10,15 @@ import { Password } from "primereact/password";
 import { Divider } from "primereact/divider";
 import { useRouter } from "next/navigation";
 import { Button } from "primereact/button";
+import { useBoletaStore } from "@/context/botelaStore";
 
 
 export default function Login() {
   const [value, setValue] = useState("");
 
+  const setUser = useBoletaStore((s) => s.setUser)
 
-  const dispatch = useDispatch();
+
 
 
   const navegate = useRouter();
@@ -25,8 +26,11 @@ export default function Login() {
 
   function clickHandleIngresar(e: { preventDefault: () => void; }) {
     e.preventDefault();
-    dispatch(setIdUser('Valido'))
-    navegate.push('/home')
+
+    setUser("Miller")
+
+
+    navegate.push('../home')
   }
 
   return (

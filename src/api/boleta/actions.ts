@@ -24,7 +24,9 @@ export type BoletaInput = {
 // utils/serialize.ts
 
 export async function crearBoleta(data: BoletaInput) {
+
   try {
+ 
     const result = await prisma.$transaction(async (tx) => {
       // 1. Insertar boleta
       const nuevaBoleta = await tx.boleta.create({
@@ -85,7 +87,7 @@ export async function cerrarBoletas(valores: CerrarBoletaInput) {
     const strFecha = valores.fecha_final;
     const strHora = valores.hora_final;
 
-    console.log("parametros de cerrar boleta -->", valores);
+  
 
     await prisma.empleado_boleta.updateMany({
       where: {

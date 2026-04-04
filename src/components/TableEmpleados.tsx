@@ -1,7 +1,6 @@
 'use client'
 
 
-import React from "react";
 import { useState, useEffect, useRef } from "react";
 
 import { DataTable, DataTableValueArray } from "primereact/datatable";
@@ -15,11 +14,9 @@ import { InputText } from "primereact/inputtext";
 
 import { useRouter } from "next/navigation";
 import Boleta from "@/components/Boleta";
-import { useAppSelector } from "@/context/hooks";
 import { getEmpleados } from "@/api/empleados/actions";
-import { crearBoleta } from "@/api/boleta/actions";
-
 import { useBoletaStore } from "@/context/botelaStore";
+import { crearBoleta } from "@/api/boleta/actions";
 
 
 type PostBoletaInput = {
@@ -53,8 +50,9 @@ interface Empleado {
 function TableEmpleados() {
 
 
-  const variableEntorno = useBoletaStore((s) => (s.variablesEntorno))
+  const variableEntorno = useBoletaStore((s) => s.variablesEntorno)
   const { idProyecto } = variableEntorno
+  const user = useBoletaStore((s) => s.user)
 
 
   const [datosEmpleadosDisponibles, setDatosEmpleadosDisponibles] = useState<Empleado[]>([]);
@@ -67,9 +65,7 @@ function TableEmpleados() {
   const [selectedEmpleadoDisponible, setSelectedEmpleadoDisponible] = useState<DataTableValueArray>([]);
   const [selectedEmpleadoAsignado, setSelectedEmpleadoAsignado] = useState<DataTableValueArray>([]);
 
-
-
-  const user = useAppSelector((s) => s.user);
+ 
   const [data, setData] = useState<PostBoletaInput>();
 
 
@@ -78,17 +74,23 @@ function TableEmpleados() {
 
   const proyecto_ = useBoletaStore((state) => state.variablesEntorno.idProyecto);
 
-  const fecha_inicio_ = useAppSelector((s) => s.boleta.fecha_inicio);
-  const ubicacion_ = useAppSelector((s) => s.boleta.ubicacion);
-  const comentarios_ = useAppSelector((s) => s.boleta.comentarios);
-  const cantidad_medida_ = useAppSelector((s) => s.boleta.cantidad_medida);
-  const unidad_medida_ = useAppSelector((s) => s.boleta.unidad_medida);
-  const hora_inicio_ = useAppSelector((s) => s.boleta.hora_inicio);
-  const hora_final_ = useAppSelector((s) => s.boleta.hora_final);
-  const cerrada_ = useAppSelector((s) => s.boleta.cerrada);
-  const codigo_manobra_ = useAppSelector((s) => s.boleta.codigo_manobra);
-  const fecha_final_ = useAppSelector((s) => s.boleta.fecha_final);
-  const cantidad_mano_obra_ = useAppSelector((s) => s.user.actividad.cantidad);
+  const variablesBoleta = useBoletaStore((state) => state.variablesBoleta);
+
+  const {
+    codigo_manobra,
+    unidad_medida,
+    cantidad_total,
+    cantidad_digitada,
+    ubicacionPlanos,
+    descripcion,
+    fecha_inicio,
+    fecha_final,
+    hora_inicio,
+    hora_final,
+  } = variablesBoleta;
+
+  
+
 
   const confirm1 = () => {
     confirmDialog({
@@ -219,17 +221,17 @@ function TableEmpleados() {
 
   const handleClickBoleta = async () => {
     const postData: PostBoletaInput = {
-      fecha_inicio: fecha_inicio_.split("T")[0],
+      fecha_inicio: fecha_inicio.split("T")[0],
       proyecto: proyecto_ || "",
-      ubicacion: ubicacion_ || "",
-      comentarios: comentarios_ || "",
-      cantidad_medida: cantidad_medida_ || 0,
-      unidad_medida: unidad_medida_ || "",
-      hora_inicio: hora_inicio_ || "",
-      hora_final: hora_final_ ?? "17:00",
-      cerrada: cerrada_ ?? false,
-      codigo_manobra: Number(codigo_manobra_) || 0,
-      fecha_final: (fecha_final_ || "").split("T")[0],
+      ubicacion: ubicacionPlanos || "",
+      comentarios: descripcion || "",
+      cantidad_medida: cantidad_digitada || 0,
+      unidad_medida: unidad_medida || "",
+      hora_inicio: hora_inicio || "",
+      hora_final: hora_final ?? "17:00",
+      cerrada:  false,
+      codigo_manobra: Number(codigo_manobra) || 0,
+      fecha_final: (fecha_final || "").split("T")[0],
       empleados_asignados: datosEmpleadosAsignados.map((emp) => ({
         codigo_empleado: emp.codigo_empleado ?? "",
         nombre_completo: emp.nombre_completo,
@@ -238,14 +240,14 @@ function TableEmpleados() {
 
     setData({
       ...postData,
-      fecha_inicio: fecha_inicio_,
-      fecha_final: fecha_final_
+      fecha_inicio: fecha_inicio,
+      fecha_final: fecha_final
     } as PostBoletaInput);
 
 
     let validacion = true;
 
-    if ((hora_inicio_ === ":") || (hora_inicio_ === "")) {
+    if ((hora_inicio === ":") || (hora_inicio === "")) {
       validacion = false;
       (toastRef.current as any)?.show({
         severity: "error",
@@ -255,7 +257,7 @@ function TableEmpleados() {
       });
     }
 
-    if (cantidad_medida_ <= 0 || cantidad_medida_ > cantidad_mano_obra_) {
+    if (cantidad_digitada <= 0 || cantidad_digitada > cantidad_total) {
       validacion = false;
       (toastRef.current as any)?.show({
         severity: "error",
@@ -324,7 +326,7 @@ function TableEmpleados() {
 
   return (
     <div >
-      <div className="flex flex-row ">
+      <div className="flex flex-col md:flex-row  ">
 
         <div className="flex flex-1 gap-2">
           <div className="card border-gray-400 border-1 flex flex-col flex-1 ">

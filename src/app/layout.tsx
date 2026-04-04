@@ -1,9 +1,7 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 
-import "react-toastify/dist/ReactToastify.css";
 import "@/styles/menu.css"
 import '@/styles/index.css'
 import 'primereact/resources/themes/lara-light-indigo/theme.css';   // theme
@@ -12,9 +10,11 @@ import 'primeicons/primeicons.css';                                 // icons
 
 import "@/styles/flags.css";
 
+import faviconligth from "@/favicon-light.ico"
+import favicondark from "@/favicon-dark.ico"
+
 
 import { ToastContainer } from "react-toastify";
-import ReduxProvider from "@/context/provider";
 
 
 
@@ -31,6 +31,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Miller Horas",
   description: "Control de rendimientos horas hombre",
+  icons: [
+    {
+      url: favicondark.src,
+      type: "image/x-icon",
+      media: "(prefers-color-scheme: dark)",
+    },
+    {
+      url: faviconligth.src,
+      type: "image/x-icon",
+      media: "(prefers-color-scheme: light)",
+    },
+
+  ],
 
 };
 
@@ -48,12 +61,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-
-        <ReduxProvider>
-
-          {children}
-        </ReduxProvider>
-
+        {children}
         <ToastContainer />
       </body>
     </html>

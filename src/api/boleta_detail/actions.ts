@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 export async function getBoletaDetail(id_proyecto_: string, estado: boolean) {
 
 
-  console.log("parametros: ", id_proyecto_, estado)
   // 1. Traer boletas
   const boletas = await prisma.boleta.findMany({
     where: {
@@ -66,6 +65,5 @@ export async function getBoletaDetail(id_proyecto_: string, estado: boolean) {
     }),
   );
 
-  console.log("detalle-->",boletaDetail)
   return boletaDetail;
 }
